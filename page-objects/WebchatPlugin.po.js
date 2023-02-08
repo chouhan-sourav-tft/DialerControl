@@ -1374,4 +1374,13 @@ exports.WebchatPlugin = class WebchatPlugin extends BaseAction {
     let locator = `//table[@id='wc-search-datatable']//tbody//tr[1]//td[text()='${messageStatus}']`;
     assert.isTrue(await this.isVisible(locator));
   }
+
+  /**
+   * function to wait
+   * @returns {void} nothing
+   */
+  async waitForFiveMinutes(time) {
+    let t = parseInt(time);
+    await this.wait(t);
+  }
 };

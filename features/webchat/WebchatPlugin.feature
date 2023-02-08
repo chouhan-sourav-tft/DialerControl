@@ -426,7 +426,7 @@ Feature: Webchat Plugin
         When user navigate to triggers tab
         And user edit trigger action 'Client UnRegister and Close Interface'
         When User fill the trigger details:
-            | delay | 00:02:00 |
+            | delay | 00:05:00 |
         Then save the changes successfully
         When user access the webChat channel
         When user log in to the Webchat plugin and send a message with following configurations:
@@ -444,3 +444,12 @@ Feature: Webchat Plugin
         And user select the conversation
         When user reply to received message for 'second' client plugin
         Then validate message is received in the 'second' client plugin
+        And user wait until '278' seconds have passed since the message was sent
+        When user selects message 1
+        Then verify close webchat modal is '' displayed
+        When user 'closeDynamic' the '' conversation with the subject 'WebchatChild_1'
+        When let user wait for '3' seconds
+        When user 'closeDynamic' the '' conversation with the subject 'WebchatChild_1'
+        When user search webchat message with following configurations:
+            | webchatQueue | WebchatChannel_1 - queue_one |
+        Then user verify previous message is 'CLOSED' successfully

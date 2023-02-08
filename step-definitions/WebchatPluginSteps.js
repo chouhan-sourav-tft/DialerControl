@@ -323,3 +323,7 @@ When('user verify previous message is {string} successfully',async(messageStatus
   await Webchat.verifyMessageStatus(hashString, messageStatus);
   // await Webchat.verifyMessageStatus(global.closedMessages[0], messageStatus);
 });
+
+When('user wait until {string} seconds have passed since the message was sent', async(time) => {
+  await Webchat.waitForFiveMinutes(time);
+})
