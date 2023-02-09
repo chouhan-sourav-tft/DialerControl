@@ -37,7 +37,9 @@ exports.VoiceChannel = class VoiceChannel extends BaseAction {
     voiceForm: '#voice-login-extension',
     voiceSubmit: '#voice-login-submit',
     queueList: '[id="login-modal-queues"] [class="checkbox"]',
-    outboundSelectClick: '#s2id_login-modal-outbound-selector',
+    // outboundSelectClick: '#s2id_login-modal-outbound-selector',
+    //outboundCampaign selection for lab 2
+    outboundSelectClick: '[id="s2id_voice-outbound-inbound-selector-select"]',
     outboundSelect: '#select2-drop input',
     selectCamp: '#voice-owner-selector-save',
     voiceManager: '[id="menu_1"]',

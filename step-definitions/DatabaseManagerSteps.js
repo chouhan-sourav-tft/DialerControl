@@ -212,7 +212,7 @@ Then('load the database', async (datatable) => {
     };
   });
   await Data.loadDatabase(databaseDetails.dbName, databaseDetails);
-  await Data.searchDB(databaseDetails.dbName);
+  // await Data.searchDB(databaseDetails.dbName);
 });
 
 Then('manage assignments in database manager', async (datatable) => {
