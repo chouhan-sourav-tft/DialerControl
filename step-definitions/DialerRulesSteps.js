@@ -1,9 +1,9 @@
 const { When, Then } = require('@cucumber/cucumber');
 const { DialerRules } = require('../page-objects/DialerRules.po');
-const { VoiceChannel } = require('../page-objects/VoiceChannel.po');
-
+const { BaseAction } = require('../setup/baseAction');
 
 const dialerRules = new DialerRules();
+const action = new BaseAction();
 
 global.newDBName = [];
 
@@ -30,22 +30,33 @@ Then('in dialer control menu choose the following', async (dataTable) => {
     await dialerRules.updateDialerControlSettings(settings);
 });
 
-Then('user click the previously created DB', async () => {
-    databaseDetails = {
-        'dbName': global.newDBName[element.databaseIndex].toString(),
-    };
-    await dialerRules.clickPreviousDatabase(databaseDetails.dbName)
-})
+Then('user click the previously created DB', async (datatable) => {
+    let dbName = '';
+    let databaseDetails = '';
+    datatable.hashes().forEach(async (element) => {
+        // waiting here so that database upload here
+        await action.wait(2);
+        if (element.databaseIndex) {
+            dbName = global.newDBName[element.databaseIndex];
+        }
+        else {
+            dbName = action.getRandomString('_database');
+            global.newDBName.push(dbName.toString());
+        }
+        databaseDetails = {
+            'databaseCampaign': element.databaseCampaign,
+            'optionName': element.optionName,
+            'optionPhone1': element.optionPhone1
+        };
+    });
+    await dialerRules.clickPreviousDatabase((await dbName).toString(), databaseDetails);
+});
 
 Then('user validate that all contacts are closed', async () => {
     await dialerRules.validateContacts();
-})
+    await dialerRules.deleteDatabase();
+});
 
 Then('user clicks the finish button', async () => {
     await dialerRules.finishCampaign();
-})
-
-Then('verify all the contacts {string} loaded in database are triggered', async (phoneNumber) => {
-    await dialerRules.verifyPhoneNumber(phoneNumber);
-}
-);
+});
