@@ -1,9 +1,12 @@
 const { When, Then } = require('@cucumber/cucumber');
 const { DialerRules } = require('../page-objects/DialerRules.po');
 const { BaseAction } = require('../setup/baseAction');
+const { VoiceChannel } = require('../page-objects/VoiceChannel.po');
+
 
 const dialerRules = new DialerRules();
 const action = new BaseAction();
+const voiceChannel = new VoiceChannel();
 
 global.newDBName = [];
 
@@ -59,4 +62,20 @@ Then('user validate that all contacts are closed', async () => {
 
 Then('user clicks the finish button', async () => {
     await dialerRules.finishCampaign();
+});
+
+Then('verify all contacts loaded in the database are triggered', async (callData) => {
+    let databaseDetails = callData.rowsHash();
+    const phoneList = databaseDetails.number.split(',');
+    for (let i = 0; i < phoneList.length; i++) {
+        let phoneNumber = await (await voiceChannel.getPhoneNumber()).replace(/\s+/g, '');
+        await voiceChannel.containSubstring(databaseDetails.number, phoneNumber);
+        await voiceChannel.verifyAndClickPhoneNumber(phoneNumber);
+        //function to verify error warning for invalid number
+        await dialerRules.verifyErrorWarning();
+        await voiceChannel.wait(2);
+        await voiceChannel.submitOutcomes(
+            databaseDetails.outcomeGroup,
+            databaseDetails.outcomeName);
+    }
 });

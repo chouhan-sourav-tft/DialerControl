@@ -14,7 +14,7 @@ exports.DialerRules = class DialerRules extends BaseAction {
         ratio: '[data-ratio="1"]',
         searchDatabase: '(//input[@data-translate="tbl-search"])[1]',
         previousDatabase: '[class="odd highLighRow"]',
-        validateClosedContacts: '[id="closed_contacts_label"]',
+        validateClosedContacts: '[id="database_pie_chart"]',
         recycleTabCallOutcome: '[class="select with-angle-down valid"]',
         recycleInterval: '[name="recycle_rule_duration"]',
         recycleMaxTries: '[name="recycle-max-tries-input"]',
@@ -26,7 +26,9 @@ exports.DialerRules = class DialerRules extends BaseAction {
         databaseEdit: '(//span[@data-translate="editselected"])[1]',
         deleteDatabase: '#delete-db-button',
         confirmDeleteDatabase: '#yesdeleteDB',
-        popUpMsg: '#newContentdiv'
+        popUpMsg: '#newContentdiv',
+        callError: '[id="newContentdiv"]',
+
     };
 
     /** 
@@ -122,7 +124,7 @@ exports.DialerRules = class DialerRules extends BaseAction {
     */
     async validateContacts() {
         await this.waitForSelector(this.elements.validateClosedContacts);
-        await this.shouldContainText(this.elements.validateClosedContacts, '0');
+        await this.shouldContainText(this.elements.validateClosedContacts, 'Closed');
     }
 
     /**
@@ -148,5 +150,17 @@ exports.DialerRules = class DialerRules extends BaseAction {
         await this.click(this.elements.confirmDeleteDatabase);
         const successDelete = await this.getTexts(this.elements.popUpMsg);
         assert.equal(successDelete, 'Database has been deleted successfully.');
+    }
+
+    /**
+    * Function to to verify error warning
+    * @returns {void} nothing
+    */
+    async verifyErrorWarning() {
+        await this.waitForSelector(this.elements.callError);
+        let warning = await this.isVisible(this.elements.callError);
+        await assert.isTrue(warning);
+        //wait here till error popup close
+        await this.wait(5);
     }
 }
