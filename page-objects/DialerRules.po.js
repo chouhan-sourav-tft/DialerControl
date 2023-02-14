@@ -28,6 +28,10 @@ exports.DialerRules = class DialerRules extends BaseAction {
         confirmDeleteDatabase: '#yesdeleteDB',
         popUpMsg: '#newContentdiv',
         callError: '[id="newContentdiv"]',
+        startTime: '//input[@name="dial-rule-startTime"]',
+        endTime: '//input[@name="dial-rule-endTime"]',
+        ruleMaxTries: '//input[@name="dial-rule-maxTries-input"]',
+        phoneField: '//div[@id="rules-phone-numbers"]//label[2]'
 
     };
 
@@ -50,6 +54,18 @@ exports.DialerRules = class DialerRules extends BaseAction {
         await this.click(this.elements.dialerName);
         await this.clearField(this.elements.dialerName);
         await this.type(this.elements.dialerName, dialerRule.dialerName);
+        await this.clearField(this.elements.startTime);
+        await this.type(this.elements.startTime, dialerRule.startTime);
+        await this.pressKey('Enter');
+        await this.clearField(this.elements.endTime);
+        await this.type(this.elements.endTime, dialerRule.endTime);
+        await this.pressKey('Enter');
+        await this.clearField(this.elements.ruleMaxTries);
+        await this.type(this.elements.ruleMaxTries, dialerRule.ruleMaxTries);
+        await this.click(this.elements.phoneField);
+    await this.pressKey('Backspace');
+        let selectPhoneField = `text=${dialerRule.phoneField}`;
+        await this.click(selectPhoneField);
     }
 
     /** 

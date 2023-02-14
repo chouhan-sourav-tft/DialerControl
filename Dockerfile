@@ -48,4 +48,4 @@ RUN npm install
 COPY . /
 
 #CMD  npm run testJenkins
-CMD npm run jenkinsTag '@6401' --host=https://qa-lab2.finesource.org --domain=tests.surbhi --domain_uuid=94ee4b33-0213-4f81-887c-2130b9e8193c
+CMD npm run jenkinsTag '@5718' --host=https://qa-lab2.finesource.org --domain=tests.surbhi --domain_uuid=94ee4b33-0213-4f81-887c-2130b9e8193c

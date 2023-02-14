@@ -14,8 +14,11 @@ Feature: Dialer Rules
         Then select the dialer type 'power-preview'
         Then user go to the 'Dialer rules manager' tab
         And user configure the folllowing rule
-            | dialerName | Rule_1 |
-        Then user click on the 'Recycle' button
+            | dialerName   | Rule_1  |
+            | startTime    | 09:00   |
+            | endTime      | 18:00   |
+            | ruleMaxTries | 3       |
+            | phoneField   | phone 1 |
         When user set the following values in the previously added line
             | callOutcome     | Block |
             | recycleInterval | 4h    |

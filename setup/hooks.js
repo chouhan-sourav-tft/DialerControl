@@ -5,7 +5,7 @@ const { BaseAction } = require('./baseAction');
 const baseAction = new BaseAction();
 setDefaultTimeout(60 * 8* 10000);
 
-let headlessValue = false;
+let headlessValue = true;
 
 if(process.argv.includes('ENV=jenkins'))
   headlessValue = true;
@@ -32,7 +32,7 @@ AfterAll(async () => {
 // Create a fresh browser context for each test.
 Before(async () => {
   console.log('before ...');
-  global.context = await global.browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  global.context = await global.browser.newContext({ viewport: { width: 1280, height: 620 } });
   global.page = await global.context.newPage();
 });
 
