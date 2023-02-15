@@ -2,8 +2,8 @@
 Feature: Dialer Rules
 
     @5718
-    Scenario: Dialer Rules-Validate all contacts are closed
-        Given User login to the platform as 'admin'
+    Scenario: Power Preview: sort by outcome - rule with phone1 only (valid)
+        Given User login to the platform as 'Supervisor_2'
         Then clean active calls
         And user delete the stored database
         When user navigate to callbacks manager
@@ -14,11 +14,12 @@ Feature: Dialer Rules
         Then select the dialer type 'power-preview'
         Then user go to the 'Dialer rules manager' tab
         And user configure the folllowing rule
+            | phoneField   | 1       |
             | dialerName   | Rule_1  |
             | startTime    | 09:00   |
             | endTime      | 18:00   |
             | ruleMaxTries | 3       |
-            | phoneField   | phone 1 |
+        Then user click on the Recycle button
         When user set the following values in the previously added line
             | callOutcome     | Block |
             | recycleInterval | 4h    |
@@ -44,13 +45,11 @@ Feature: Dialer Rules
             | outcomeName  | Ok               |
         When Navigate to Database Manager
         Then user click the previously created DB
-            | databaseCampaign | optionName | optionPhone1 | databaseIndex |
-            | 1                | 0          | 1            | 0             |
         And user validate that all contacts are closed
 
     @5720
-    Scenario: Dialer Rules- invalid contacts
-        Given User login to the platform as 'admin'
+    Scenario: Power Preview: sort by outcome - rule with phone1 only (invalid)
+        Given User login to the platform as 'Supervisor_2'
         Then clean active calls
         And user delete the stored database
         When user navigate to callbacks manager
@@ -61,8 +60,12 @@ Feature: Dialer Rules
         Then select the dialer type 'power-preview'
         Then user go to the 'Dialer rules manager' tab
         And user configure the folllowing rule
-            | dialerName | Rule_1 |
-        Then user click on the 'Recycle' button
+            | dialerName   | Rule_1  |
+            | startTime    | 09:00   |
+            | endTime      | 18:00   |
+            | ruleMaxTries | 3       |
+            | phoneField   | 1       |
+        Then user click on the Recycle button
         When user set the following values in the previously added line
             | callOutcome     | Block |
             | recycleInterval | 4h    |
@@ -87,6 +90,51 @@ Feature: Dialer Rules
             | outcomeName  | Ok               |
         When Navigate to Database Manager
         Then user click the previously created DB
-            | databaseCampaign | optionName | optionPhone1 | databaseIndex |
-            | 1                | 0          | 1            | 0             |
+        And user validate that all contacts are closed
+
+    @5721
+    Scenario: Power Preview: sort by outcome - rule with phone2 only (valid)
+        Given User login to the platform as 'Supervisor_2'
+        Then clean active calls
+        And user delete the stored database
+        When user navigate to callbacks manager
+        And user delete all scheduled callback
+        When user navigates to voice manager
+        Then user edits the campaign 'OutboundCampaign_1'
+        When user navigates to dialer
+        And select the Preview Dial Timeout '15'
+        Then select the dialer type 'power-preview'
+        Then user go to the 'Dialer rules manager' tab
+        And user configure the folllowing rule
+            | dialerName   | Rule_1  |
+            | startTime    | 09:00   |
+            | endTime      | 18:00   |
+            | ruleMaxTries | 3       |
+            | phoneField   | 2       |
+        Then user click on the Recycle button
+        When user set the following values in the previously added line
+            | callOutcome     | Block |
+            | recycleInterval | 4h    |
+            | maxTries        | 3     |
+        And user clicks the finish button
+        When Navigate to Database Manager
+        And Create Database
+            | browseFile            | databaseCampaign | optionName | optionPhone1 |
+            | fixtures/database.csv | 1                | 0          | 1            |
+        Then load the database
+            | browseFile            | numOfColumnsToUpload | databaseCampaign | optionName | optionPhone1 |
+            | fixtures/database.csv | 1                    | 1                | 0          | 1            |
+        When user navigates to dialer control menu
+        Then in dialer control menu choose the following
+            | campaign             | OutboundCampaign_1   |
+            | sortContactsPriority | By outcome and field |
+        And login to Voice Channel with '100' extension
+        And user selects 'OutboundCampaign_1' campaign
+        And let user wait for '15' seconds
+        Then verify all contacts loaded in the database are triggered by the dialer
+            | number       | 910261828        |
+            | outcomeGroup | Call Again Later |
+            | outcomeName  | Ok               |
+        When Navigate to Database Manager
+        Then user click the previously created DB
         And user validate that all contacts are closed

@@ -31,7 +31,14 @@ exports.DialerRules = class DialerRules extends BaseAction {
         startTime: '//input[@name="dial-rule-startTime"]',
         endTime: '//input[@name="dial-rule-endTime"]',
         ruleMaxTries: '//input[@name="dial-rule-maxTries-input"]',
-        phoneField: '//div[@id="rules-phone-numbers"]//label[2]'
+        phoneField: '//div[@id="rules-phone-numbers"]//label[2]',
+        allDayUncheck: '//div[@class="col col-sm-4"]//label[@class="checkbox"]',
+        deletePhoneButton: '#rules-phone-numbers li:first-child .select2-search-choice-close',
+        totalPhoneList: '#rules-phone-numbers .select2-search-choice-close',
+        phoneInput: '#rules-phone-numbers .select2-search-field input',
+        removePreviousRecycle: '.recycle-rule-remove-btn',
+        recycleAddButton: '.recycle-rule-add-btn'
+
 
     };
 
@@ -45,37 +52,78 @@ exports.DialerRules = class DialerRules extends BaseAction {
         await this.click(dialerRuleTab);
     }
 
-    /** *
-    * Function to fill dialer rules
-    * @returns {void} nothing
-    */
+    // /** *
+    // * Function to fill dialer rules
+    // * @returns {void} nothing
+    // */
+    // async fillDialerRules(dialerRule) {
+    //     await this.waitForSelector(this.elements.dialerName);
+    //     await this.click(this.elements.dialerName);
+    //     await this.clearField(this.elements.dialerName);
+    //     await this.type(this.elements.dialerName, dialerRule.dialerName);
+    //     if (dialerRule.startTime === '09:00' && dialerRule.endTime === '18:00')
+    //         await this.uncheckToCheckbox(this.elements.allDayUncheck);
+    //     await this.clearField(this.elements.startTime);
+    //     await this.type(this.elements.startTime, dialerRule.startTime);
+    //     await this.pressKey('Enter');
+    //     await this.clearField(this.elements.endTime);
+    //     await this.type(this.elements.endTime, dialerRule.endTime);
+    //     await this.pressKey('Enter');
+    //     await this.clearField(this.elements.ruleMaxTries);
+    //     await this.type(this.elements.ruleMaxTries, dialerRule.ruleMaxTries);
+    // await this.click(this.elements.phoneField);
+    //     await this.pressKey('Backspace');
+    // let selectPhoneField = `text=${dialerRule.phoneField}`;
+    // await this.click(selectPhoneField);
+    // }
     async fillDialerRules(dialerRule) {
         await this.waitForSelector(this.elements.dialerName);
         await this.click(this.elements.dialerName);
         await this.clearField(this.elements.dialerName);
         await this.type(this.elements.dialerName, dialerRule.dialerName);
-        await this.clearField(this.elements.startTime);
-        await this.type(this.elements.startTime, dialerRule.startTime);
         await this.pressKey('Enter');
-        await this.clearField(this.elements.endTime);
-        await this.type(this.elements.endTime, dialerRule.endTime);
-        await this.pressKey('Enter');
-        await this.clearField(this.elements.ruleMaxTries);
-        await this.type(this.elements.ruleMaxTries, dialerRule.ruleMaxTries);
-        await this.click(this.elements.phoneField);
-    await this.pressKey('Backspace');
-        let selectPhoneField = `text=${dialerRule.phoneField}`;
-        await this.click(selectPhoneField);
+        if (dialerRule.phoneField) {
+            if (await this.isVisible(this.elements.deletePhoneButton)) {
+                const totalPhones = await this.countElement(this.elements.totalPhoneList);
+                for (var i = 0; i < totalPhones; i++) {
+                    await this.waitForSelector(this.elements.deletePhoneButton);
+                    await this.click(this.elements.deletePhoneButton);
+                }
+            }
+            await this.type(this.elements.phoneInput, dialerRule.phoneField);
+            await this.pressKey('Enter');
+        }
+        if (dialerRule.startTime) {
+            await this.uncheckToCheckbox(this.elements.allDayUncheck)
+            await this.click(this.elements.startTime);
+            await this.clearField(this.elements.startTime);
+            await this.type(this.elements.startTime, dialerRule.startTime);
+            await this.pressKey('Enter');
+        }
+        if (dialerRule.endTime) {
+            await this.click(this.elements.endTime);
+            await this.clearField(this.elements.endTime);
+            await this.type(this.elements.endTime, dialerRule.endTime);
+            await this.pressKey('Enter');
+        }
+        if (dialerRule.ruleMaxTries) {
+            await this.click(this.elements.ruleMaxTries);
+            await this.clearField(this.elements.ruleMaxTries);
+            await this.type(this.elements.ruleMaxTries, dialerRule.ruleMaxTries);
+            await this.pressKey('Enter');
+        }
     }
 
     /** 
     * Function to click recycle button
     * @returns {void} nothing
     */
-    async clickRecycle(button) {
-        let recycleButton = `//div[@class="col col-sm-12"]//span[text()="${button}"]`;
-        await this.waitForSelector(recycleButton);
-        await this.click(recycleButton);
+    async clickRecycle() {
+        if (await this.isVisible(this.elements.removePreviousRecycle)) {
+            await this.click(this.elements.removePreviousRecycle);
+        }
+        await this.waitForSelector(this.elements.recycleAddButton);
+        await this.click(this.elements.recycleAddButton);
     }
 
     /** 

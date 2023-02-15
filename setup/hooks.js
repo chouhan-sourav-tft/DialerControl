@@ -5,7 +5,7 @@ const { BaseAction } = require('./baseAction');
 const baseAction = new BaseAction();
 setDefaultTimeout(60 * 8* 10000);
 
-let headlessValue = true;
+let headlessValue = false;
 
 if(process.argv.includes('ENV=jenkins'))
   headlessValue = true;
